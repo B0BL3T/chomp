@@ -1,10 +1,9 @@
 import pygame
 import sys
 import random
-from fish import Fish, fishes
 from player import Player
 from game_parameters import *
-from utilities import draw_background
+from utilities import draw_background, add_fish
 
 # import the class Fish and fishes container from the module fish
 from fish import Fish, fishes
@@ -16,19 +15,12 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Using blit to draw tiles")
 
-# initialize pygame clock
+# Load the sound effects
+chomp = pygame.mixer.Sound("../assets/sounds/chomp.wav")
 clock = pygame.time.Clock()
 
-background = screen.copy()
-draw_background(background)
-
-# place fish off the right side of the screen in random positions
-for _ in range(5):
-    fishes.add(Fish(random.randint(SCREEN_WIDTH, SCREEN_WIDTH * 2),
-    random.randint(TILE_SIZE, SCREEN_HEIGHT - TILE_SIZE)))
-
-# spawn in player
-player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+# initialize pygame clock
+clock = pygame.time.Clock()
 
 # Screen dimensions
 screen_width = 900
@@ -37,14 +29,14 @@ tile_size = 64
 
 
 # load game font
-custom_font = pygame.font.Font("../chomp/assets/fonts/Black_Crayon.ttf", 50)
+custom_font = pygame.font.Font("../assets/fonts/Black_Crayon.ttf", 50)
 text = (custom_font.render("Chomp", True, (255,69,0)))
 
 # load tiles from assets folder into surfaces
 def draw_background(screen):
-    water = pygame.image.load("../chomp/assets/sprites/water.png").convert()
-    sand = pygame.image.load("../chomp/assets/sprites/sand_top.png").convert()
-    seagrass = pygame.image.load("../chomp/assets/sprites/seagrass.png").convert()
+    water = pygame.image.load("../assets/sprites/water.png").convert()
+    sand = pygame.image.load("../assets/sprites/sand_top.png").convert()
+    seagrass = pygame.image.load("../assets/sprites/seagrass.png").convert()
 
     # use the png transparency
     water.set_colorkey((0,0,0))
@@ -67,6 +59,31 @@ draw_background(background)
 
 # Main Loop
 running = True
+background = screen.copy()
+draw_background(background)
+
+# place fish off the right side of the screen in random positions
+add_fish(5)
+player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+
+# initialize score and a custom font to display it
+score = 0
+score_font = pygame.font.Font("../assets/fonts/Black_Crayon.ttf", 48)
+
+def draw_mess(screen):
+    game_font = pygame.font.Font("../assets/fonts/Black_Crayon.ttf", 64)
+    text = game_font.render("Welcome to Chomp", True, (155, 155, 155))
+    screen.blit(text, (SCREEN_WIDTH / 2 - text.get_width() / 2, SCREEN_HEIGHT / 2 - text.get_height() / 2))
+
+draw_mess = True
+
+if draw_mess:
+    screen.blit(background, (0,0))
+
+    draw_welcome(screen)
+
+
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -90,7 +107,16 @@ while running:
     fishes.update()
     player.update()
 
-    #if any fish
+    result = pygame.sprite.spritecollide(player, fishes, True)
+    if result:
+        score += len(result)
+        # play chomp sound
+        pygame.mixer.Sound.play(chomp)
+        #add new fish
+        add_fish(len(result))
+
+    # if any fish have moved off the left side of the screen, remove them
+    # and add a new fish off the right side of the screen
 
     for fish in fishes:
         if fish.rect.x < -fish.rect.width:
@@ -101,6 +127,10 @@ while running:
     # draw game objects
     fishes.draw(screen)
     player.draw(screen)
+
+    #draw the score in the upper left corner
+    text = score_font.render(f"{score}", True, (255, 69, 0))
+    screen.blit(text, (SCREEN_WIDTH - text.get_width() -10, 0 ))
 
     # Update the display
     pygame.display.flip()

@@ -1,13 +1,13 @@
 import pygame
 import random
-
+from fish import Fish, fishes
 from game_parameters import *
 
 def draw_background(surf):
     # Load tiles from the assets folder into surfaces
-    water = pygame.image.load("../chomp/assets/sprites/water.png").convert()
-    sand = pygame.image.load("../chomp/assets/sprites/sand_top.png").convert()
-    seagrass = pygame.image.load("../chomp/assets/sprites/seagrass.png").convert()
+    water = pygame.image.load("../assets/sprites/water.png").convert()
+    sand = pygame.image.load("../assets/sprites/sand_top.png").convert()
+    seagrass = pygame.image.load("../assets/sprites/seagrass.png").convert()
     sand.set_colorkey((0,0,0))
     seagrass.set_colorkey((0,0,0))
     #fill the screen with water
@@ -22,6 +22,11 @@ def draw_background(surf):
         x = random.randint(0,SCREEN_WIDTH)
         surf.blit(seagrass, (x, SCREEN_HEIGHT - TILE_SIZE * 2 + 20))
     #draw the title at the top center of the screen
-    custom_font = pygame.font.Font("../chomp/assets/fonts/Black_Crayon.ttf", 48)
+    custom_font = pygame.font.Font("../assets/fonts/Black_Crayon.ttf", 48)
     text = custom_font.render("Chomp", True, (255, 69, 0))
     surf.blit(text, (SCREEN_WIDTH / 2 - text.get_width() / 2, 0))
+
+def add_fish(num_fish):
+    for _ in range(num_fish):
+        fishes.add(Fish(random.randint(SCREEN_WIDTH, SCREEN_WIDTH * 2),
+                        random.randint(TILE_SIZE, SCREEN_HEIGHT - TILE_SIZE)))

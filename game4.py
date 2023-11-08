@@ -4,6 +4,7 @@ import random
 
 # import the class Fish and fishes container from the module fish
 from fish import Fish, fishes
+from sFish import sFish, sfishes
 
 # Initialize Pygame
 pygame.init()
@@ -21,14 +22,15 @@ pygame.display.set_caption('Using titles and blit to draw on surface')
 clock = pygame.time.Clock()
 
 # load game font
-custom_font = pygame.font.Font("../assets/fonts/Black_Crayon.ttf", 50)
+custom_font = pygame.font.Font("../chomp/assets/fonts/Black_Crayon.ttf", 50)
+
 text = (custom_font.render("Chomp", True, (255,69,0)))
 
 # load tiles from assets folder into surfaces
 def draw_background(screen):
-    water = pygame.image.load("../assets/sprites/water.png").convert()
-    sand = pygame.image.load("../assets/sprites/sand_top.png").convert()
-    seagrass = pygame.image.load("../assets/sprites/seagrass.png").convert()
+    water = pygame.image.load("../chomp/assets/sprites/water.png").convert()
+    sand = pygame.image.load("../chomp/assets/sprites/sand_top.png").convert()
+    seagrass = pygame.image.load("../chomp/assets/sprites/seagrass.png").convert()
 
     # use the png transparency
     water.set_colorkey((0,0,0))
@@ -49,8 +51,12 @@ def draw_background(screen):
 background = screen.copy()
 draw_background(background)
 
-for _ in range(20000):
+for _ in range(5):
     fishes.add(Fish(random.randint(screen_width, 2 * screen_width), random.randint(tile_size, screen_height - tile_size)))
+
+for _ in range (5):
+    sfishes.add(sFish(random.randint(-screen_width, 0), random.randint(tile_size, screen_height - tile_size)))
+
 
 
 # Main Loop
@@ -63,15 +69,22 @@ while running:
     screen.blit(background, (0,0))
 
     fishes.update()
+    sfishes.update()
 
-    #if any fish
+    #if any fish/sfish
 
     for fish in fishes:
         if fish.rect.x < -fish.rect.width:
             fishes.remove(fish)
             fishes.add(Fish(random.randint(screen_width, 2 * screen_width), random.randint(tile_size, screen_height - tile_size)))
 
+    for sfish in sfishes:
+        if sfish.rect.x > screen_width:
+            sfishes.remove(sfish)
+            sfishes.add(sFish(random.randint(-screen_width, 0), random.randint(tile_size, screen_height - tile_size)))
+
     fishes.draw(screen)
+    sfishes.draw(screen)
 
     # Update the display
     pygame.display.flip()

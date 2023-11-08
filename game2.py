@@ -17,9 +17,9 @@ pygame.display.set_caption('Using titles and blit to draw on surface')
 
 # load tiles from assets folder into surfaces
 def draw_background(screen):
-    water = pygame.image.load("../assets/sprites/water.png").convert()
-    sand = pygame.image.load("../assets/sprites/sand_top.png").convert()
-    seagrass = pygame.image.load("../assets/sprites/seagrass.png").convert()
+    water = pygame.image.load("../chomp/assets/sprites/water.png").convert()
+    sand = pygame.image.load("../chomp/assets/sprites/sand_top.png").convert()
+    seagrass = pygame.image.load("../chomp/assets/sprites/seagrass.png").convert()
 
     # use the png transparency
     water.set_colorkey((0,0,0))

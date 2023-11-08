@@ -1,15 +1,13 @@
 import pygame
 import random
-
-MIN_SPEED = 0.5
-MAX_SPEED = 3
+from game_parameters import *
 
 class Fish(pygame.sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__()
 
-        self.image = pygame.image.load("../chomp/assets/sprites/green_fish.png").convert()
+        self.image = pygame.image.load("../assets/sprites/green_fish.png").convert()
         self.image = pygame.transform.flip(self.image, True, False)
 
         self.image.set_colorkey((0,0,0))
@@ -20,7 +18,7 @@ class Fish(pygame.sprite.Sprite):
 
         self.rect.center = (x,y)
 
-        self.speed = random.uniform(MIN_SPEED, MAX_SPEED)
+        self.speed = random.uniform(FISH_SPEED_MIN, FISH_SPEED_MAX)
     def update(self):
         self.x -= self.speed
         self.rect.x = self.x
