@@ -1,5 +1,6 @@
 import pygame
 import random
+from math import sin, cos
 from game_parameters import *
 
 class Enemy(pygame.sprite.Sprite):
@@ -19,9 +20,11 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.center = (x,y)
 
         self.speed = random.uniform(ENEMY_SPEED_MIN, ENEMY_SPEED_MAX)
-    def update(self):
-        self.x -= self.speed
+    def update(self, direction):
+        self.x += self.speed * cos(direction)
         self.rect.x = self.x
+        self.y += self.speed * sin(direction)
+        self.rect.y = self.y
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)

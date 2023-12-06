@@ -12,8 +12,12 @@ class Player(pygame.sprite.Sprite):
 
         self.forward_image = pygame.image.load("../assets/sprites/orange_fish.png").convert()
         self.forward_image.set_colorkey((0, 0, 0))
-
         self.reverse_image = pygame.transform.flip(self.forward_image, True, False)
+        self.reverse_image.set_colorkey((0, 0, 0))
+        self.up_image = pygame.transform.rotate(self.forward_image, 90)
+        self.up_image.set_colorkey((0, 0, 0))
+        self.down_image = pygame.transform.flip(self.up_image, False, True)
+        self.down_image.set_colorkey((0, 0, 0))
 
         self.image = self.forward_image
         self.rect = self.image.get_rect()
@@ -37,8 +41,11 @@ class Player(pygame.sprite.Sprite):
 
     def move_up(self):
         self.y_velocity = -1 * PLAYER_SPEED
+        self.image = self.up_image
+
     def move_down(self):
         self.y_velocity = PLAYER_SPEED
+        self.image = self.down_image
 
     def move_left(self):
         self.x_velocity = -1 * PLAYER_SPEED

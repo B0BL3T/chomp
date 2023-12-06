@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import time
 from player import Player
 from game_parameters import *
 from utilities import draw_background, add_fish
@@ -17,7 +18,10 @@ pygame.display.set_caption("Using blit to draw tiles")
 
 # Load the sound effects
 chomp = pygame.mixer.Sound("../assets/sounds/chomp.wav")
+tune = pygame.mixer.Sound("../assets/sounds/we_have_time.ogg")
 clock = pygame.time.Clock()
+
+pygame.mixer.Sound.play(tune, -1)
 
 # initialize pygame clock
 clock = pygame.time.Clock()
@@ -70,7 +74,7 @@ player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 score = 0
 score_font = pygame.font.Font("../assets/fonts/Black_Crayon.ttf", 48)
 
-def draw_mess(screen):
+def draw_welcome(screen):
     game_font = pygame.font.Font("../assets/fonts/Black_Crayon.ttf", 64)
     text = game_font.render("Welcome to Chomp", True, (155, 155, 155))
     screen.blit(text, (SCREEN_WIDTH / 2 - text.get_width() / 2, SCREEN_HEIGHT / 2 - text.get_height() / 2))
@@ -82,6 +86,8 @@ if draw_mess:
 
     draw_welcome(screen)
 
+    pygame.display.flip()
+    time.sleep(5)
 
 
 while running:
@@ -136,6 +142,19 @@ while running:
     pygame.display.flip()
 
     clock.tick(60)
+    if pygame.time.get_ticks() > 60000: # 1 min
+        if score >= TO_WIN:
+            won = "You Won!"
+        else:
+            won = "You Lost!"
+        running = False
+
+if won != "":
+    res_text = custom_font.render(won, True, (255,69,0))
+    screen.blit(res_text, ((SCREEN_WIDTH - text.get_width())/2, SCREEN_HEIGHT/2))
+    pygame.display.flip()
+    time.sleep(5)
+
 
 # Quit Pygame
 pygame.quit()
